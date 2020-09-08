@@ -2,6 +2,7 @@ import pygame as pg
 from PyGame.StartMenu import Gold
 from PyGame.StartMenu import Dmg
 from PyGame.StartMenu import AttackUpgrade
+from PyGame.StartMenu import lvl_f
 ##########################################
 pg.init()
 fps = 60
@@ -14,6 +15,7 @@ ft2 = pg.font.SysFont('B52 обычный', 36)
 wind = pg.display.set_mode((x, y))
 wind_indicator_hp = pg.Surface((50, 50))
 wind_upgrade = pg.Surface((50, 50))
+wind_monster = pg.Surface((100, 100))
 ##########################################  ЦВЕТА
 white = (255, 255, 255)
 black = (000, 000, 000)
@@ -23,19 +25,37 @@ red = (255, 0, 0)
 blue = (0, 0, 255)
 gray = (128, 128, 128)
 ##########################################
+class Mob():
+    def __init__(self, hp = 10):
+        self.hp = hp
+    def __del__(self):
+        pass
+##########################################
 color = white
 color2 = gray
 n = 0
 a = 0
-lvl = 1
 location_level = 1
 location_mob_kill = 0
-mobdead = True
+mobdead = False
+mb = Mob(location_level * 10)
+testflag = False
 ##########################################
-# загрузка данных
 gold = Gold.gold()
 dmg = Dmg.dmg()
+lvl = lvl_f.lvl_load()
 ##########################################
+def current_hp():
+    wind_indicator_hp.fill(black)
+    wind.blit(wind_indicator_hp, (225, 415))
+    t4 = ft2.render(str(mb.hp) + ' hp', 0, white)
+    wind_indicator_hp.blit(t4, (0, 0))
+    wind.blit(wind_indicator_hp, (225, 415))
+    pg.display.update()
+def start_load_wind():
+    current_hp()
+    pg.draw.rect(wind_monster, white, (0, 0, 100, 100))
+    wind.blit(wind_monster, (200, 200))
 def damage():
     damage_indicate = pg.Surface((100, 100))
     pg.draw.lines(damage_indicate, black, False, ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
@@ -44,12 +64,9 @@ def damage():
                   ([event.pos[0] - 5, event.pos[1] - 5], [event.pos[0] + 5, event.pos[1] + 5]), 2)
     pg.draw.lines(damage_indicate, white, False,
                   ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
-    wind.blit(damage_indicate, (200, 200))
-class Mob():
-    def __init__(self, hp = 10):
-        self.hp = hp
-    def __del__(self):
-        pass
+    wind_monster.blit(damage_indicate, (0, 0))
+    wind.blit(wind_monster, (200, 200))
+start_load_wind()
 while True:
     pg.display.update()
     pg.draw.rect(wind, color2, (350, 350, 50, 50))
@@ -58,7 +75,8 @@ while True:
         mobdead = False
         wind.fill(black)
         n = 0
-        pg.draw.rect(wind, white, (200, 200, 100, 100))
+        pg.draw.rect(wind_monster, white, (0, 0, 100, 100))
+        wind.blit(wind_monster, (200, 200))
     elif mobdead:
         n += 1
         continue
@@ -76,15 +94,13 @@ while True:
             if event.button == 1:
             # удар по монстру
                 if 200 <= event.pos[0] <= 300 and 200 <= event.pos[1] <= 300 and not mobdead:
-                    color = red
-                    pg.draw.rect(wind, color, (200, 200, 100, 100))
+                    # color = red
+                    # pg.draw.rect(wind, color, (200, 200, 100, 100))
                     damage()
                     mb.hp -= dmg
-                    wind_indicator_hp.fill(black)
-                    wind.blit(wind_indicator_hp, (225, 415))
-                    t4 = ft2.render(str(mb.hp) + ' hp', 0, white)
-                    wind_indicator_hp.blit(t4, (0, 0))
-                    wind.blit(wind_indicator_hp, (225, 415))
+                    current_hp()
+
+
 
                 # if a % 10 == 0:
                 #     pg.draw.rect
@@ -123,11 +139,11 @@ while True:
 
 
 
-        if event.type == pg.MOUSEBUTTONUP:
-        # анимация удара
-            if event.button == 1 and not mobdead:
-                color = white
-                pg.draw.rect(wind, color, (200, 200, 100, 100))
+        # if event.type == pg.MOUSEBUTTONUP:
+        # # анимация удара
+        #     if event.button == 1 and not mobdead:
+        #         color = white
+        #         pg.draw.rect(wind, color, (200, 200, 100, 100))
         if event.type == pg.QUIT:
             Gold.goldwrite(gold)
             Dmg.dmgwrite(dmg)
