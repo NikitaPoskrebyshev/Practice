@@ -1,7 +1,7 @@
 def attack_up(gold, lvl):
     cost = 10 * lvl
     if gold < cost:
-        print('âàì íå õâàòàåò çîëîòà')
+        print('Ð²Ð°Ð¼ Ð½Ðµ Ñ…Ð²Ð°Ñ‚Ð°ÐµÑ‚ Ð·Ð¾Ð»Ð¾Ñ‚Ð°')
     else:
         lvl += 1
         Attack_up = 1

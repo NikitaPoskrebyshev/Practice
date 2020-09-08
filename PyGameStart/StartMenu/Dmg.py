@@ -10,8 +10,8 @@ def dmg():
         b.write('1')
         b.close()
         return 1
-def dmg_write(n):
+def dmgwrite(n):
     a = open('Saves/dmg', 'w')
     a.write(str(n))
     a.close()
-    print('Данные сохранены')
+    print('Р”Р°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅРµРЅС‹')
