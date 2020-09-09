@@ -14,4 +14,4 @@ def gold_write(n):
     a = open('Saves/gold', 'w')
     a.write(str(n))
     a.close()
-    print('Данные сохранены')
+    print('Р”Р°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅРµРЅС‹')
