@@ -10,7 +10,7 @@ clock = pg.time.Clock()
 ##########################################
 x = 500
 y = 500
-ft = pg.font.SysFont('arial', 60)
+ft = pg.font.SysFont('B52 обычный', 60)
 ft2 = pg.font.SysFont('B52 обычный', 36)
 wind = pg.display.set_mode((x, y))
 # ИНДИКАТОР ХП
@@ -18,9 +18,12 @@ wind_indicator_hp = pg.Surface((100, 50))
 # КНОПКА АПГРЕЙДА
 wind_upgrade = pg.Surface((50, 50))
 # МОНСТР
-wind_monster = pg.Surface((100, 100))
+# wind_monster = pg.Surface((100, 100))
+wind_monster = pg.Surface((300, 100))
 # СЛЕДЫ ОТ УДАРОВ
 damage_hits = pg.Surface((100, 100))
+# СООБЩЕНИЕ О СМЕРТИ МОБА
+wind_mob_dead = pg.Surface((250, 75))
 ########################################## ЦВЕТА
 white = (255, 255, 255)
 black = (000, 000, 000)
@@ -31,6 +34,8 @@ blue = (0, 0, 255)
 gray = (128, 128, 128)
 color = white
 color2 = gray
+##########################################
+lvl = Lvl.lvl_load()
 ########################################## КЛАССЫ / ФУНКЦИИ
 class Mob():
     def __init__(self, hp = 10):
@@ -40,10 +45,19 @@ class Mob():
 def draw(type, x, y, width, height):
     if type == 'monster':
         pg.draw.rect(wind_monster, color, (x, y, width, height))
-        wind.blit(wind_monster, (200, 200))
+        wind.blit(wind_monster, (100, 200))
+        if mobdead:
+            wind_monster.fill(black)
+            t = ft.render('Mob is dead', 1, red)
+            wind_monster.blit(t, (30, 30))
+            wind.blit(wind_monster, (100, 200))
+            wind_monster.fill(black)
     if type == 'button':
         pg.draw.rect(wind_upgrade, color2, (x, y, width, height))
         wind.blit(wind_upgrade, (350, 350))
+        if mobdead:
+            wind_upgrade.fill(black)
+            wind.blit(wind_upgrade, (350, 350))
     if type == 'hits':
         pg.draw.lines(damage_hits, black, False,
                           ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
@@ -55,8 +69,11 @@ def draw(type, x, y, width, height):
                           ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
         wind_monster.blit(damage_hits, (0, 0))
     return type, x, y, width, height
+location_level = 1
+mb = Mob(location_level * 10)
+mb.hp = 10 * lvl
 def start_load():
-    draw('monster', 0, 0, 100, 100)
+    draw('monster', 100, 0, 100, 100)
     draw('button', 0, 0, 50, 50)
     current_hp()
 def current_hp():
@@ -65,6 +82,9 @@ def current_hp():
     t4 = ft2.render(str(mb.hp) + ' hp', 0, white)
     wind_indicator_hp.blit(t4, (0, 0))
     wind.blit(wind_indicator_hp, (225, 415))
+    if mobdead:
+        wind_indicator_hp.fill(black)
+        wind.blit(wind_indicator_hp, (225, 415))
     pg.display.update()
 # def damage_hits():
 #     pg.draw.lines(damage_hits, black, False,
@@ -79,28 +99,23 @@ def current_hp():
 ##########################################
 n = 0
 a = 0
-location_level = 1
 location_mob_kill = 0
 mobdead = False
-mb = Mob(location_level * 10)
-testflag = False
 ##########################################
 gold = Gold.gold()
 dmg = Dmg.dmg()
-lvl = Lvl.lvl_load()
 ##########################################
 
 
-
 while True:
-    pg.display.update()
     start_load()
+    pg.display.update()
     if mobdead and n == 1000:
         mb = Mob(location_level * 10)
         mobdead = False
         wind.fill(black)
         n = 0
-        draw('monster', 0, 0, 100, 100)
+        draw('monster', 100, 0, 100, 100)
         wind.blit(wind_monster, (200, 200))
     elif mobdead:
         n += 1
@@ -120,7 +135,7 @@ while True:
             # удар по монстру
                 if 200 <= event.pos[0] <= 300 and 200 <= event.pos[1] <= 300 and not mobdead:
                     color = red
-                    draw('monster', 0, 0, 100, 100)
+                    draw('monster', 100, 0, 100, 100)
                     draw('hits', 0, 0, 100, 100)
                     # damage_hits()
                     mb.hp -= dmg
@@ -163,8 +178,6 @@ while True:
             if mb.hp <= 0 and not mobdead:
                 mobdead = True
                 wind.fill(black)
-                t = ft.render('Mob is dead', 1, red)
-                wind.blit(t, (115, 200))
                 gold += lvl
                 location_mob_kill += 1
                 if location_mob_kill == 10:
@@ -177,10 +190,11 @@ while True:
         # анимация удара
             if event.button == 1 and not mobdead:
                 color = white
-                draw('monster', 0, 0, 100, 100)
+                draw('monster', 100, 0, 100, 100)
         if event.type == pg.QUIT:
             Gold.gold_write(gold)
             Dmg.dmg_write(dmg)
+            Lvl.lvl_save(lvl)
             exit()
     if gold >= 10 * lvl:
         color2 = yellow
