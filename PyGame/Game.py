@@ -59,15 +59,11 @@ def draw(type, x, y, width, height):
             wind_upgrade.fill(black)
             wind.blit(wind_upgrade, (350, 350))
     if type == 'hits':
-        pg.draw.lines(damage_hits, black, False,
-                          ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
-        pg.draw.lines(damage_hits, black, False,
-                          ([event.pos[0] - 6, event.pos[1] + 6], [event.pos[0] + 6, event.pos[1] - 6]), 5)
-        pg.draw.lines(damage_hits, white, False,
-                          ([event.pos[0] - 5, event.pos[1] - 5], [event.pos[0] + 5, event.pos[1] + 5]), 2)
-        pg.draw.lines(damage_hits, white, False,
-                          ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
-        wind_monster.blit(damage_hits, (0, 0))
+        pg.draw.lines(damage_hits, black, False, ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
+        pg.draw.lines(damage_hits, black, False, ([event.pos[0] - 6, event.pos[1] + 6], [event.pos[0] + 6, event.pos[1] - 6]), 5)
+        pg.draw.lines(damage_hits, white, False, ([event.pos[0] - 5, event.pos[1] - 5], [event.pos[0] + 5, event.pos[1] + 5]), 2)
+        pg.draw.lines(damage_hits, white, False, ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
+        wind_monster.blit(damage_hits, (-200, -200))
     return type, x, y, width, height
 location_level = 1
 mb = Mob(location_level * 10)
@@ -86,16 +82,16 @@ def current_hp():
         wind_indicator_hp.fill(black)
         wind.blit(wind_indicator_hp, (225, 415))
     pg.display.update()
-# def damage_hits():
-#     pg.draw.lines(damage_hits, black, False,
-#                   ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
-#     pg.draw.lines(damage_hits, black, False,
-#                   ([event.pos[0] - 6, event.pos[1] + 6], [event.pos[0] + 6, event.pos[1] - 6]), 5)
-#     pg.draw.lines(damage_hits, white, False,
-#                   ([event.pos[0] - 5, event.pos[1] - 5], [event.pos[0] + 5, event.pos[1] + 5]), 2)
-#     pg.draw.lines(damage_hits, white, False,
-#                   ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
-#     wind.blit(damage_hits, (200, 200))
+    # def damage_hits():
+    #     pg.draw.lines(damage_hits, black, False,
+    #                   ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
+    #     pg.draw.lines(damage_hits, black, False,
+    #                   ([event.pos[0] - 6, event.pos[1] + 6], [event.pos[0] + 6, event.pos[1] - 6]), 5)
+    #     pg.draw.lines(damage_hits, white, False,
+    #                   ([event.pos[0] - 5, event.pos[1] - 5], [event.pos[0] + 5, event.pos[1] + 5]), 2)
+    #     pg.draw.lines(damage_hits, white, False,
+    #                   ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
+    #     wind.blit(damage_hits, (200, 200))
 ##########################################
 n = 0
 a = 0
@@ -111,7 +107,7 @@ while True:
     start_load()
     pg.display.update()
     if mobdead and n == 1000:
-        mb = Mob(location_level * 10)
+        mb = Mob(lvl * 10)
         mobdead = False
         wind.fill(black)
         n = 0
@@ -140,15 +136,6 @@ while True:
                     # damage_hits()
                     mb.hp -= dmg
                     current_hp()
-                    pg.draw.lines(damage_hits, black, False,
-                                  ([event.pos[0] - 6, event.pos[1] - 6], [event.pos[0] + 6, event.pos[1] + 6]), 5)
-                    pg.draw.lines(damage_hits, black, False,
-                                  ([event.pos[0] - 6, event.pos[1] + 6], [event.pos[0] + 6, event.pos[1] - 6]), 5)
-                    pg.draw.lines(damage_hits, white, False,
-                                  ([event.pos[0] - 5, event.pos[1] - 5], [event.pos[0] + 5, event.pos[1] + 5]), 2)
-                    pg.draw.lines(damage_hits, white, False,
-                                  ([event.pos[0] - 5, event.pos[1] + 5], [event.pos[0] + 5, event.pos[1] - 5]), 2)
-                    wind.blit(damage_hits, (200, 200))
 
 
                 # if a % 10 == 0:
@@ -165,7 +152,6 @@ while True:
                         dmg += buf[2]
                         gold -= buf[0]
                         lvl = buf[1]
-                        print(buf)
                     except:
                         pass
                     wind.fill(black)
@@ -181,7 +167,7 @@ while True:
                 gold += lvl
                 location_mob_kill += 1
                 if location_mob_kill == 10:
-                    location_level += 1
+                    lvl += 1
                     location_mob_kill = 0
 
 
